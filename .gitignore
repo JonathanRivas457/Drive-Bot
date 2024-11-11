@@ -1,0 +1,24 @@
+# Ignore environment variables file
+.env
+
+# Ignore Python cache and bytecode files
+__pycache__/
+*.py[cod]
+
+# Ignore virtual environment directory
+venv/
+.env/
+
+# Ignore system-specific files
+.DS_Store  # macOS
+Thumbs.db  # Windows
+
+# Ignore logs
+*.log
+
+# Ignore IDE-specific directories
+.vscode/
+.idea/
+
+data/credentials.json
+data/Drive_Files/
