@@ -22,3 +22,4 @@ Thumbs.db  # Windows
 
 data/credentials.json
 data/Drive_Files/
+token.pickle
