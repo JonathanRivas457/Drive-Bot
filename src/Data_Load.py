@@ -48,7 +48,6 @@ def pull_drive_files(service):
 
     # List to store file data
     all_files = []
-    print("Pulling files from drive...")
 
     # Initial query (file name, id, type, and nextPage)
     results = service.files().list(
@@ -82,17 +81,15 @@ def pull_drive_files(service):
 
 def download_drive_files(service, drive_files, download_path):
     
+    error_files = []
+
     # Create directory if doesn't exist
     if not os.path.exists(download_path):
         os.makedirs(download_path)
 
-    progress_bar = tqdm(drive_files, desc="Downloading Files...", ncols=100)
-
-
     # Iterate through each file 
-    for file in drive_files:
+    for file in tqdm(drive_files, desc="Downloading Files...", ncols=100):
 
-        print(f"Downloading file {file['name']}")
         file_type = file['mimeType']
 
         # Construct query based on file type
@@ -100,6 +97,10 @@ def download_drive_files(service, drive_files, download_path):
 
             file_name = clean_file_name(file['name']) + '.docx'  # Clean file name
             file_path = os.path.join(download_path, file_name)
+            
+            # Skip if file already exists
+            if os.path.exists(file_path):
+                continue
 
             request = service.files().export_media(
                 fileId=file['id'],
@@ -111,6 +112,10 @@ def download_drive_files(service, drive_files, download_path):
             file_name = file['name'] + '.pdf'
             file_path = os.path.join(download_path, file_name)
 
+            # Skip if file already exists
+            if os.path.exists(file_path):
+                continue
+
             request = service.files().get_media(
                 fileId=file['id']
             )
@@ -120,28 +125,27 @@ def download_drive_files(service, drive_files, download_path):
             file_name = file['name'] + '.docx'
             file_path = os.path.join(download_path, file_name)
 
+            # Skip if file already exists
+            if os.path.exists(file_path):
+                continue
+
             request = service.files().get_media(
                 fileId=file['id']
             )
 
-        fh = io.FileIO(file_path, 'wb')
 
         # Download file
+        fh = io.FileIO(file_path, 'wb')
         try:
             downloader = MediaIoBaseDownload(fh, request)
-
             done = False
-            while done is False:
-                status, done = downloader.next_chunk()    
-        except Exception as e:
-            print(f"Error downloading file {file['name']}: {e}")
 
-        progress_bar.update(1)
+            while done is False:
+                status, done = downloader.next_chunk()  
+
+        except Exception as e:
+            error_files.append(file['name'])
+
+    print(f"Failed to download the following files: {error_files} \n Please try downloading them manually")
 
     return
-
-
-download_path = 'data/Drive_Files'
-service = authenticate_google_drive()
-drive_files = pull_drive_files(service)
-download_drive_files(service, drive_files, download_path)

@@ -22,4 +22,6 @@ Thumbs.db  # Windows
 
 data/credentials.json
 data/Drive_Files/
+data/DocumentDatabase.db
+data/VectorDatabase.index
 token.pickle

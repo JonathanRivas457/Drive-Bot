@@ -1,0 +1,5 @@
+{
+    "doc_db": "data/DocumentDatabase.db",
+    "vec_db": "data/VectorDatabase.index",
+    "download_path": "data/Drive_Files"
+}
