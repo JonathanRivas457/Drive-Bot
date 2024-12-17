@@ -1,11 +1,11 @@
 from langchain_openai import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.memory import ConversationBufferMemory
-
+import os
 
 def create_chains():
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
-    llm = ChatOpenAI(api_key="sk-proj-An1zwcufhqqCT4ErBQvhT3BlbkFJxEcc0NBSFsLywt5n2TXS", model_name="gpt-4o-mini", temperature = 0.5)
+    llm = ChatOpenAI(api_key=os.getenv('OPENAI_KEY'), model_name="gpt-4o-mini", temperature = 0.5)
 
     context_template = """ 
     Filter out the content of the following documents based on whether they provide useful context when answering the user's prompt.
